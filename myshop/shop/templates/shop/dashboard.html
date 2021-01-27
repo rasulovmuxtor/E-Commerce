@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        
+        {% for item in top_items %}
+            <div class="col-lg-3 col-sm-6 mb-2">
+                <div class="card d-flex h-100">
+                    <div class="item-img">
+                        <a href="{{ item.get_absolute_url }}">
+                            <img src="{{item.image.url}}" class="card-img-top"  alt="">
+                        </a>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="card-title"><a class="text-secondary text-decoration-none" href="#">{{item.manufacturer}}</a>
+                            <a class="text-decoration-none" href="{{ item.get_absolute_url }}">
+                                {{item.name}}
+                            </a>
+                        </p>
+                        
+                       
+                    </div>
+                    
+                    <div class="card-body d-flex justify-content-between align-items-end">
+                        {% if item.sale_price > 0 %}
+                            <p class="card-text">
+                            <span class="text-decoration-line-through text-danger">
+                                {{item.price}}
+                            </span>
+                                {{ item.sale_price }} $
+                            </p>
+                            <div class="sale">Sale</div>
+                        
+                        {% else %}
+                        <p class="card-text">{{ item.price }} $</p>
+                        {% endif %}
+                        <form action="{% url "cart_add" item.id %}" method="POST">
+                        <input type="hidden" name="quantity" value="1">
+                        <input type="hidden" name="override">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                        
+                        <!-- <a href="#" class="card-link">Another link</a> -->
+                    </div>
+                
+               
+            </div>
+          </div>
+        {% endfor %}
+        
+        
+        {% if top_items.has_other_pages %}
+            <ul class="pagination">
+            {% if top_items.has_previous %}
+                <li><a class="page-link" href="?page={{ top_items.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+            {% endif %}
+            {% for i in top_items.paginator.page_range %}
+                {% if top_items.number == i %}
+                    <li class="page-item active"><span class="page-link" >{{ i }}</span></li>
+                {% else %}
+                    <li><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if top_items.has_next %}
+                <li class="page-item" ><a class="page-link" href="?page={{ top_items.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+            {% endif %}
+            </ul>
+        {% endif %}
+            
+    </div>
+    
+</div>
+{% endblock  %}
+
+    

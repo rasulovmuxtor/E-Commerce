@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Your shopping cart
+{% endblock %}
+
+{% block breadcrumb %}
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Cart</li>
+    </ol>
+</nav>
+{% endblock breadcrumb %}
+
+{% block main %}
+<div class="container-fluid mt-3">
+
+    {% if cart %}
+        <div class="row">
+            <div class="col-2">
+                <a class="btn btn-sm btn-outline-danger pl-2" href="{% url 'clear' %}">Clear Cart</a>
+                <a class="btn btn-sm btn-outline-primary pl-2" href="{% url 'create_order' %}">Order</a>
+            </div>
+            <div class="col-3">
+                <p>{{ cart|length }} Item{{cart|length|pluralize}} | Total Price: {{ cart.get_total_price }} $</p>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-danger">Your cart is empty</p>
+    {% endif %}
+        
+    
+<div class="row">
+{% for item in cart %}
+    {% with product=item.product %}
+    <div class="col-lg-3 col-sm-6 mb-2">
+        <div class="card d-flex h-100">
+            <div class="item-img">
+                <img src="{{product.image.url}}" class="card-img-top"  alt="">
+            </div>
+            <div class="card-body">
+                <p class="card-title"><a class="text-secondary text-decoration-none" href="#">{{product.manufacturer}}</a>
+                    <a class="text-decoration-none" href="{{ product.get_absolute_url }}">
+                        {{product.name}}
+                    </a>
+                </p>
+                
+               
+            </div>
+            
+            <div class="card-body d-flex justify-content-between align-items-end">
+                <form action="{% url "cart_add" product.id %}" method="POST">
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min='1' max='10'>
+                    <input type="hidden" name="override" value="Update">
+                    {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                        Update Quantity
+                        </button>
+                </form>
+                <form action="{% url "cart_remove" product.id %}" method="post">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                        Remove
+                        </button>
+                        {% csrf_token %}
+                </form>
+            </div>
+            
+            <div class="card-body d-flex justify-content-between align-items-end">
+                {% if product.sale_price > 0 %}
+                    <p class="card-text">
+                    <span class="text-decoration-line-through text-danger">
+                        {{product.price}}
+                    </span>
+                        {{ product.sale_price }} $
+                    </p>
+                    <div class="sale">Sale</div>
+                
+                {% else %}
+                <p class="card-text">Price: {{ item.price }} $</p>
+                {% endif %}
+                <p class="card-text">Total Price: {{ item.total_price }} $</p>
+            </div> 
+    </div>
+  </div>
+{% endwith %}
+{% endfor %}
+</div>
+
+
+</div>
+{% endblock %}

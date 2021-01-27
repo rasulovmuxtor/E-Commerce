@@ -1,0 +1,44 @@
+body{
+    font-family: sans-serif;
+}
+.navbar-nav .nav-item > .nav-link{
+    margin: 0 10px;
+}
+.navbar-nav .nav-item:first-child .nav-link {
+    padding-left: 0;
+    margin-left: 0;
+}
+.breadcrumb .breadcrumb-item a{
+    text-decoration: none;
+}
+
+.item-img{
+    height: 240px;
+    width: auto;
+    padding-top: 2px;
+}
+.card-img-top{
+    height: 100%;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
+.card-text{
+    margin-bottom: 0;
+}
+.sale{
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    color: red;
+    padding: 0 3px;
+    font-family: sans-serif;
+    border-radius: 4px;
+    background-color: wheat;
+}
+
+@media all and (max-width:991px){
+    .navbar-nav .nav-item > .nav-link{
+        margin: 0;
+    }
+}

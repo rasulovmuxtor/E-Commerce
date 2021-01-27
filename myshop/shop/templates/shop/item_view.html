@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ item.category.category.get_absolute_url }}">{{item.category.category}}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ item.category.get_absolute_url }}">{{item.category.name}}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{item.name}}</li>
+    </ol>
+</nav>
+{% endblock breadcrumb %}
+
+{% block main %}
+
+<div class="container-fluid mt-3">
+
+<div class="col-lg-3 col-sm-6 mb-2">
+    <div class="card d-flex h-100">
+        <div class="item-img">
+            <a href="{{ item.get_absolute_url }}">
+                <img src="{{item.image.url}}" class="card-img-top"  alt="">
+            </a>
+        </div>
+
+        <div class="card-body">
+            <p class="card-title"><a class="text-secondary text-decoration-none" href="#">{{item.manufacturer}}</a>
+                <a class="text-decoration-none" href="{{ item.get_absolute_url }}">
+                    {{item.name}}
+                </a>
+            </p>
+            
+           
+        </div>
+        
+        <div class="card-body d-flex justify-content-between align-items-end">
+            {% if item.sale_price > 0 %}
+                <p class="card-text">
+                <span class="text-decoration-line-through text-danger">
+                    {{item.price}}
+                </span>
+                    {{ item.sale_price }} $
+                </p>
+                <div class="sale">Sale</div>
+            
+            {% else %}
+            <p class="card-text">{{ item.price }} $</p>
+            {% endif %}
+            <form action="{% url "cart_add" item.id %}" method="POST">
+                <input type="number" name="quantity" value="1" min='1' max='10'>
+                <input type="hidden" name="override" value="Update">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa fa-cart-plus" aria-hidden="true"></i>
+                </button>
+            </form>
+            
+        </div>
+    
+   
+</div>
+</div>
+<p>{{ item.description }}</p>
+</div>
+{% endblock main %}
+    
